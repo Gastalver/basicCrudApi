@@ -5,6 +5,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var _ = require('underscore');
+var request = require('request');
 
 var json = require('./movies.json');
 var app = express();
@@ -68,6 +69,41 @@ router.delete('/:id', function(req, res) {
         json.splice(indexToDel, 1);
     }
     res.json(json);
+});
+
+router.get('/external-api', function(req, res) {
+    request({
+        method: 'GET',
+        uri: 'http://localhost:' + (process.env.PORT || 3500),
+    }, function(error, response, body) {
+        if (error) { throw error; }
+        var movies = [];
+        _.each(JSON.parse(body), function(elem, index) {
+            movies.push({
+            Title: elem.Title,
+            Rating: elem.Rating
+        });
+        });
+        res.json(_.sortBy(movies, 'Rating').reverse());
+    });
+});
+
+router.get('/imdb', function(req, res) {
+    request({
+            method: 'GET',
+            uri: 'http://sg.mediaimdb.com/suggests/a/aliens.json',
+}, function(err, response, body) {
+        var data = body.substring(body.indexOf('(')+1);
+        data = JSON.parse(data.substring(0,data.length-1));
+        var related = [];
+        _.each(data.d, function(movie, index) {
+            related.push({
+                Title: movie.l,
+                Year: movie.y,Poster: movie.i ? movie.i[0] : ''
+            });
+        });
+        res.json(related);
+    });
 });
 
 app.use('/', router);
