@@ -1,0 +1,17 @@
+{
+  "name": "basiccrudapi",
+  "version": "1.0.0",
+  "description": "Servidor con una API basica (CRUD sobre MongoDB)",
+  "main": "server.js",
+  "scripts": {
+    "monitoriza": "nodemon server.js localhost 3500",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel Gastalver",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "express": "^4.14.1",
+    "underscore": "^1.8.3"
+  }
+}
